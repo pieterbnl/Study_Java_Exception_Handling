@@ -196,12 +196,29 @@ public class Main {
             System.out.println("Caught: " + e + "\n");
         }
 
-
-
-
+        // Example of use of finally keyword
+        // Thrown exceptions causes the execution flow in a method to be abruptly altered. Potentially causing it to return prematurely.
+        // The 'finally' keyword can be used to create a block of code that will be executed after a try/catch block has completed,
+        // ...and before the code following the try/catch block.
+        // The finally block will execute whether or not an exception is thrown. Even if no matching catch statement is present.
+        // The finally clause is optional (although note that each try statement requires at least a catch OR finally clause)
+        System.out.println("Finally example");
+        System.out.println("-------------------------------------------");
+        try {
+            methodA(); // throws and catches an exception: prematurely breaking out of try and executes finally on it's way out
+        } catch (Exception e) {
+            System.out.println("Exception caught: " + e);
+        }
+        methodB(); // exits try block via a return statement and executes finally on it's way out
+        methodC(); // executes try/catch block without issues and executes finally on it's way out
     }
 
-    // Used with example of nested try statement, with method call
+
+    // ************************
+    // FOLLOWING: METHODS USED IN EXAMPLES
+    // ************************
+
+    // Method used for example of nested try statement, with method call
     static void nesttry(int a) {
         try { // NESTED TRY !
             System.out.println("try in nesttry() called");
@@ -216,6 +233,7 @@ public class Main {
         }
     }
 
+    // Method used for throw example
     static void throwtest() {
         try {
             throw new NullPointerException("throw test"); // throw exception - notice 'new' here creates an instance of NullPointerException
@@ -230,4 +248,39 @@ public class Main {
         System.out.println("Inside causeException()");
         throw new IllegalAccessException("demonstration");
     }
+
+
+    // Method used to demonstrate finally keyword
+    // Throw an exception out of a method
+    static void methodA() {
+        try {
+            System.out.println("inside methodA()");
+            throw new RuntimeException("demo");
+        } finally {
+            System.out.println("A's finally");
+        }
+    }
+
+    // Method used to demonstrate finally keyword
+    // Return from within a try block
+    static void methodB() {
+        try {
+            System.out.println("inside methodB()");
+            //throw new RuntimeException("demo");
+            return;
+        } finally {
+            System.out.println("B's finally");
+        }
+    }
+
+    // Method used to demonstrate finally keyword
+    // Execute a try block normally
+    static void methodC() {
+        try {
+            System.out.println("inside methodC()");
+        } finally {
+            System.out.println("C's finally");
+        }
+    }
+
 }
