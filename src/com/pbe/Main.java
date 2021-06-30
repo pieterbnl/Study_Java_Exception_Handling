@@ -124,5 +124,64 @@ public class Main {
 //            System.out.println("This line will never be reached.");
 //        }
 
+        // Example of nested try statement
+        // A try statement can be inside the block of another try.
+        // Each try statement will be passed and the context of each exception added on the stack.
+        // If a try statement does not have a catch handler for a particular exception, the next try statement's catch handler is checked for a match.
+        // If none of the catch statements matches, Java run-time system will handle the exception.
+        // In below example, set a to 0, 1 or 2, to get different exceptions
+        System.out.println("Nested try statement");
+        System.out.println("-------------------------------------------");
+        try {
+            int a = 0;
+            int b = 1 / a; // causing '/ zero' exception if a = 0
+            try { // NESTED TRY !
+                if (a == 1)
+                    a = a / (a - a);  // causing another '/ zero' exception
+                if (a == 2) {
+                    int c[] = { 1 };
+                    c[10] = 11; // causing 'out of bounds' exception
+                }
+            } catch(ArrayIndexOutOfBoundsException e) { // first catch in nested try
+                    System.out.println("Array index out-of-bounds: " + e);
+            } catch (ArithmeticException e) { // second catch in nested try
+                System.out.println("Divide by 0: " + e);
+            }
+        } catch (ArithmeticException e) { // catch in main try
+            System.out.println("Divide by 0: " + e);
+        }
+        System.out.println();
+
+        // Example of nested try statement, with method call
+        // A call to a method can be enclosed within a try block
+        // Inside the method can be another (nested) try statement
+        // The try within the method is nested inside the try block that called the method
+        System.out.println("Nested try statement, with method call");
+        System.out.println("-------------------------------------------");
+        try {
+            int a = 0;
+            int b = 1 / a; // causing '/ zero' exception if a = 0
+            nesttry(a);
+        } catch (ArithmeticException e) {
+            System.out.println("Divide by 0: " + e);
+        }
+
+
     }
+
+    // Used with example of nested try statement, with method call
+    static void nesttry(int a) {
+        try { // NESTED TRY !
+            System.out.println("try in nesttry() called");
+            if (a == 1)
+                a = a / (a - a);  // causing another '/ zero' exception
+            if (a == 2) {
+                int c[] = {1};
+                c[10] = 11; // causing 'out of bounds' exception
+            }
+        } catch (ArrayIndexOutOfBoundsException e) { // first catch in nested try
+            System.out.println("Array index out-of-bounds: " + e);
+        }
+    }
+
 }
