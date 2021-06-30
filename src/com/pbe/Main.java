@@ -166,6 +166,38 @@ public class Main {
             System.out.println("Divide by 0: " + e);
         }
 
+        // Example of throwing own exception (throw)
+        // With use of the throw statement a program can throw an exception explicitly: 'throw ThrowableInstance'
+        // ThrowableInstance must be an object of type Throwable or a subclass
+        // Primitive types (int, char, ..) and non-Throwable classes (String, Object, ..) can't be used as exception
+        // Two ways to obtain a Throwable object:
+        // 1. Using a parameter in a catch clause
+        // 2. Creating one with the new operator
+        // The flow of execution stops immediately after the throw statement. No further statements are executed.
+        // The (nested) try block(s) are inspected to see if there's a catch statement that matches.
+        // If no matching catch is found, Java default exception handler takes care.
+        System.out.println("Throw example");
+        System.out.println("-------------------------------------------");
+         try {
+             throwtest(); // calling method that will throw and catch a NullPointer exception
+         } catch (NullPointerException e) { // the exception is caught again
+             System.out.println("throw exception caught again: " + e + "\n");
+         }
+
+        // Example of throws
+        // A 'throws' clause can be used in a method's declaration to list the types of exceptions that the method is capable to cause, but does not handle.
+        // This way, callers of the method can guard themselves against these possible exceptions.
+        // The throws clause specifies an exception list; a comma-seperated list of the exceptions that the applicable method can throw.
+        System.out.println("Throws example");
+        System.out.println("-------------------------------------------");
+        try {
+            throwsException();
+        } catch (IllegalAccessException e) {
+            System.out.println("Caught: " + e + "\n");
+        }
+
+
+
 
     }
 
@@ -184,4 +216,18 @@ public class Main {
         }
     }
 
+    static void throwtest() {
+        try {
+            throw new NullPointerException("throw test"); // throw exception - notice 'new' here creates an instance of NullPointerException
+        } catch (NullPointerException e) { // catch exception
+            System.out.println("exception caught inside throwtest()");
+            throw e; // rethrow the exception
+        }
+    }
+
+    // Method used to demonstrate use of throws
+    static void throwsException() throws IllegalAccessException {
+        System.out.println("Inside causeException()");
+        throw new IllegalAccessException("demonstration");
+    }
 }
