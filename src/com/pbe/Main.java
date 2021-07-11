@@ -2,6 +2,10 @@ package com.pbe;
 
 import jdk.swing.interop.SwingInterOpUtils;
 
+import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+
 /** Study on Java Exception Handling
  @author Pieter Beernink
  @version 1.0
@@ -14,9 +18,16 @@ import jdk.swing.interop.SwingInterOpUtils;
 // An exception is an unexpected event occurring during the execution of a program and as such disrupting the normal flow of instructions.
 // The main goal of exception handling is to prevent disruption and maintain a controlled flow of the program.
 
+// Two main approaches in dealing with errors:
+// 1. LBYL - Look Before You Leave
+// 2. EAFP - Easier to Ask for Forgiveness then Permission
+// In Java, LBYL is most common. To test if an object is not null for example, before using it.
+// In EAFP you perform the operation and then respond to the exception if something goes wrong.
+
 // Exception handling is managed via five keywords:
 // 1. try - used to contain program statements to monitor for exceptions; must be followed by either catch or finally
-// 2. catch - used to catch a 'thrown' exception that occurs in the try block; must be preceded by try block and can be followed by a finally block
+// 2. catch (=exception handler) - used to catch one or more 'thrown' exceptions that may occur in the try block; must be preceded by try block and can be followed by a finally block
+// note: it's essential to make sure that any code in the catch statement doesn't cause any exceptions itself
 // 3. throw - to manually throw an exception
 // 4. throws - to specify exceptions that can occur in a method; i.e. it doesn't throw exceptions, it just specifies those that may occur
 // 5. finally - optional, specifies any code that absolutely must be executed after a try block completes and executes no matter if an exception is handled or not
@@ -96,6 +107,15 @@ public class Main {
         // Inserting a value in an index that does not exist results in an ArrayIndexOutOfBoundsException
         // int a[] = { 1, 2, 3 };
         // a[10] = 11;
+
+
+        // Example of LBYL: Look Before You Leave
+        // Example of EAFP: Easier to Ask for Forgiveness then Permission
+        int x = 98;
+        int y = 0;
+        System.out.println(divideLBYL(x, y));
+        System.out.println(divideEAFP(x, y));
+        System.out.println();
 
         // Example of a divide by zero error, not being handled
         System.out.println("Division by zero error, without own exception handling");
@@ -181,6 +201,15 @@ public class Main {
 //            This problem can be fixed by switching the catch statements, with the ArithmeticException catch coming prior to the general Exception catch.
 //        }
         System.out.println("rest of the code \n");
+
+        // Example of multiple exceptions in a single catch block
+        System.out.println("Multiple exceptions in a single catch block");
+        try {
+            int result = divide();
+        } catch (ArithmeticException | NoSuchElementException e) { // use | to be able to list multiple exceptions in a single catch line
+            System.out.println(e.toString()); // toString prints the error message
+            System.out.println("Unable to perform division, shutting down...");
+        }
 
         // Example of nested try statement
         // A try statement can be inside the block of another try.
@@ -299,6 +328,84 @@ public class Main {
     // ************************
     // FOLLOWING: METHODS USED IN EXAMPLES
     // ************************
+
+    // Example of LBYL: Look Before You Leave
+    private static int divideLBYL(int x, int y) {
+        if(y != 0) {
+            return x / y;
+        } else {
+            return 0;
+        }
+    }
+
+    // Example of EAFP: Easier to Ask for Forgiveness then Permission
+    private static int divideEAFP(int x, int y) {
+        try {
+            return x / y;
+        } catch (ArithmeticException e) {
+            return 0;
+        }
+    }
+
+    // Example of LBYL: Look Before You Leave
+    private static int getIntLBYL() {
+        Scanner s = new Scanner(System.in);
+        boolean isValid = true;
+        System.out.println("Please enter an integer ");
+        String input = s.next();
+        for(int i=0; i<input.length(); i++) {
+            if(!Character.isDigit(input.charAt(i))) { // checking up front if input is valid
+                isValid = false;
+                break;
+            }
+        }
+        if(isValid) { // input is valid, pass value back
+            return Integer.parseInt(input);
+        }
+        return 0;
+    }
+
+    // Example of EAFP: Easier to Ask for Forgiveness then Permission
+    private static int getIntEAFP() {
+        Scanner s = new Scanner(System.in);
+        System.out.println("Please enter an integer ");
+        try { // testing the user input
+            return s.nextInt();
+        } catch (InputMismatchException e) { // catching exception on input
+            return 0;
+        }
+    }
+
+
+    //
+    private static int divide() {
+        int x, y;
+//        try {
+            x = getInt();
+            y = getInt();
+            System.out.println("x is " + x + ", y is " + y);
+            return x / y;
+//        } catch (NoSuchElementException e) {
+//            throw new ArithmeticException("No suitable input");
+//        } catch (ArithmeticException e) {
+//            throw new ArithmeticException("atempt to divide by zero");
+//        }
+    }
+
+    // not to be used normally like this, just for example purposes
+    private static int getInt() {
+        Scanner s = new Scanner(System.in);
+        System.out.println("Please enter an integer");
+        while(true) {
+            try {
+                return s.nextInt();
+            } catch (InputMismatchException e) {
+                // go round again, reading past the end of line in the input first
+                s.nextInt();
+                System.out.println("Please enter a number using only the digits 0 to 9");
+            }
+        }
+    }
 
     // Method used in example to demonstrate use of a nested try statement, with method call
     static void nesttry(int a) {
