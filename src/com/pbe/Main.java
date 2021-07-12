@@ -91,7 +91,49 @@ import java.util.Scanner;
 // If a client can reasonably be expected to recover from an exception, make it a checked exception.
 // If a client cannot do anything to recover from the exception, make it an unchecked exception.
 
+// Assertions / use of assert
+// NOTE: Not to be used as exception handling solution, but as it somewhat relates in preventing errors, decided to add under the Exceptions topic.
+//
+// Keyword assert is used during program development to create 'an assertion'.
+// Assertions are used to verify that some expected condition is actually met.
+// I.e. it enables you to test your assumptions about your program.
+// For example: to test if a method that should always return a positive value, actually is.
+// This is done by asserting that the return value is greater than zero using an assert statement.
+// Or with a method that calculates the speed of a particle, it might be asserted that the calculated speed is less than the speed of light.
+//
+// Two forms of the assert keyword:
+// 1. assert condition
+// Here, condition is an expression that evaluates to an boolean result. If true, no other action takes place. Otherwise, an AssertionError is thrown.
+// 2. assert condition: expr;
+// Expr is a value passed to the AssertionError constructor and is converted to its string format and displayed if an assertion fails.
+// Typically a string is specified for expr, but any non-void expression is allowed as long as it results in a string conversion.
+// By verifying that the boolean expression is true, the assertion confirms the assumptions about the behavior of the program.
+// This increases the confidence that the program is free of errors.
+//
+// Using assertions is one of the quickest and most effective ways to detect and correct bugs.
+// Assertions can also serve to document the inner workings of your program, enhancing maintainability.
+// Assertions are a development-phase tool to catch bugs in the code.
+// They're to be used internal checks to make sure that any made assumptions are correct.
+// They're designed to be easily removed when no longer needed.
+//
+// There are many situations where it is good to use assertions, including (see oracle docs):
+// - Internal Invariants
+// - Control-Flow Invariants
+// - Preconditions, Postconditions, and Class Invariants
+//
+// Situations where not to use them:
+// - For argument checking in public methods
+// Argument checking is typically part of the published specs/contract of a method, which must be obeyed no matter if assertions are enabled or disabled
+// - To do any work that your application requires for correct operation.
+// Assertions are not meant to be used in production, where use of assertions should be disabled.
+
+// To enable assertion checking at run time, it's required to specify -ea option when running java.
+// For this reason, assertions should never be relied on to perform any action actually required by the program, as normally a program will not be run with assertions enabled.
+// Assertions can also be disabled by using the -da option.
+
 public class Main {
+
+    static int val = 3;
 
     public static void main(String[] args) {
 
@@ -323,6 +365,20 @@ public class Main {
         // 2. multi-catch
         // 3. final rethrow / more precise rethrow
         // T.B.D.
+
+        // **********************
+        // Demonstration of assert
+        // **********************
+        // To enable assertion checking at run time, it's needed to start java with having the -ea option specified
+        // Without -ea, assertion checking will not take place and no exception will be thrown.
+        System.out.println("Example of using assert");
+        int n;
+        for (int i=0; i < 5; i++) {
+            n = getnum(); // calls getnum, which returns an integer value, which is assigned to n
+            assert n > 0; // n is tested to be > 0 and fails when n is 0, causing an AssertionError exception
+            // assert n > 0 : "n is not > 0"; // assertion with own specific exception message
+            System.out.println("n is: " + n);
+        }
     }
 
     // ************************
@@ -469,5 +525,10 @@ public class Main {
         } finally {
             System.out.println("C's finally");
         }
+    }
+
+    // Used in assert example
+    static int getnum() {
+        return val--; // return an integer
     }
 }
